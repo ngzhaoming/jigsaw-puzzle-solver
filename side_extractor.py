@@ -30,9 +30,7 @@ def compute_minmax_xy(thresh):
 
 
 def segment_piece(image, bin_threshold=128):
-	"""
-	Apply segmentation of the image by simple binarization
-	"""
+	# Apply segmentation of the image by simple binarization
     return cv2.threshold(image, bin_threshold, 255, cv2.THRESH_BINARY)[1]
 
     
@@ -431,11 +429,11 @@ def cluster_lines(lines):
 
         
 def get_corners(dst, neighborhood_size=5, score_threshold=0.3, minmax_threshold=100):
-    
-	"""
+    """
 	Given the input Harris image (where in each pixel the Harris function is computed),
 	extract discrete corners
 	"""
+
     data = dst.copy()
     data[data < score_threshold*dst.max()] = 0.
 
@@ -451,28 +449,26 @@ def get_corners(dst, neighborhood_size=5, score_threshold=0.3, minmax_threshold=
     return yx[:, ::-1]
 
     
-
+"""
+Since we expect the 4 puzzle corners to be the corners of a rectangle, here we take
+all detected Harris corners and we find the best corresponding rectangle.
+We perform a recursive search with max depth = 2:
+- At depth 0 we take one of the input point as the first corner of the rectangle
+- At depth 1 we select another input point (with distance from the first point greater
+    then d_threshold) as the second point
+- At depth 2 and 3 we take the other points. However, the lines 01-12 and 12-23 should be
+    as perpendicular as possible. If the angle formed by these lines is too much far from the
+    right angle, we discard the choice.
+- At depth 3, if a valid candidate (4 points that form an almost perpendicular rectangle) is found,
+    we add it to the list of candidates.
+    
+Given a list of candidate rectangles, we then select the best one by taking the candidate that maximizes
+the function: area * Gaussian(rectangularness)
+- area: it is the area of the candidate shape. We expect that the puzzle corners will form the maximum area
+- rectangularness: it is the mse of the candidate shape's angles compared to a 90 degree angles. The smaller
+                    this value, the most the shape is similar toa rectangle.
+"""
 def get_best_fitting_rect_coords(xy, d_threshold=30, perp_angle_thresh=20, verbose=0):
-
-	"""
-	Since we expect the 4 puzzle corners to be the corners of a rectangle, here we take
-	all detected Harris corners and we find the best corresponding rectangle.
-	We perform a recursive search with max depth = 2:
-	- At depth 0 we take one of the input point as the first corner of the rectangle
-	- At depth 1 we select another input point (with distance from the first point greater
-		then d_threshold) as the second point
-	- At depth 2 and 3 we take the other points. However, the lines 01-12 and 12-23 should be
-		as perpendicular as possible. If the angle formed by these lines is too much far from the
-		right angle, we discard the choice.
-	- At depth 3, if a valid candidate (4 points that form an almost perpendicular rectangle) is found,
-		we add it to the list of candidates.
-		
-	Given a list of candidate rectangles, we then select the best one by taking the candidate that maximizes
-	the function: area * Gaussian(rectangularness)
-	- area: it is the area of the candidate shape. We expect that the puzzle corners will form the maximum area
-	- rectangularness: it is the mse of the candidate shape's angles compared to a 90 degree angles. The smaller
-						this value, the most the shape is similar toa rectangle.
-	"""
     N = len(xy)
 
     distances = scipy.spatial.distance.cdist(xy, xy)

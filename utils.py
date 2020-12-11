@@ -14,16 +14,14 @@ def get_line_through_points(p0, p1):
 
 
 def distance_point_line_squared((a, b, c), (x0, y0)):
-	"""
-	Computes the squared distance of a 2D point (x0, y0) from a line ax + by + c = 0
-	"""
+	# Computes the squared distance of a 2D point (x0, y0) from a line ax + by + c = 0
+
     return (a*x0 + b*y0 + c)**2 / (a**2 + b**2)
 
 
 def distance_point_line_signed((a, b, c), (x0, y0)):
-	"""
-	Computes the signed distance of a 2D point (x0, y0) from a line ax + by + c = 0
-	"""
+	# Computes the signed distance of a 2D point (x0, y0) from a line ax + by + c = 0
+	
     return (a*x0 + b*y0 + c) / np.sqrt(a**2 + b**2)
 
 
