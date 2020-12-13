@@ -7,9 +7,12 @@ img = cv2.imread("../white/piece1.jpg")
 kernel = np.ones((5, 5), np.uint8)
 
 # Convert color to grayscale
+# Used to see the intensity of the color in the picture
 imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # kernel size is magnitude of the blur, then sigma x
+# NOTE: Kernel size MUST be an odd number
+# Helps to remove noise in the image background
 imgBlur = cv2.GaussianBlur(imgGray, (7, 7), 0)
 
 # Canny edge detector to determine the edges in the image
