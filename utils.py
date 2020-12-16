@@ -12,7 +12,6 @@ def get_line_through_points(p0, p1):
     
     return y1 - y0, x0 - x1, x1*y0 - x0*y1
 
-
 def distance_point_line_squared((a, b, c), (x0, y0)):
 	# Computes the squared distance of a 2D point (x0, y0) from a line ax + by + c = 0
 
@@ -24,10 +23,10 @@ def distance_point_line_signed((a, b, c), (x0, y0)):
 	
     return (a*x0 + b*y0 + c) / np.sqrt(a**2 + b**2)
 
-
 def rotate(image, degrees):
     """
-	Rotate an image by the amount specifiedi in degrees
+	Rotate an image by the amount specified in degrees
+    Returns the rotated image and the rotation matrix (M)
 	"""
     if len(image.shape) == 3:
         rows,cols, _ = image.shape

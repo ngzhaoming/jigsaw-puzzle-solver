@@ -118,7 +118,7 @@ def compute_mean_line(lines, debug=False):
     
     
     if debug:
-        print(correction_factor)
+        # print(correction_factor)
         print(weights)
         print
     
